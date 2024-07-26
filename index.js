@@ -43,7 +43,7 @@ app.get('/router_get/:encoded', (req, res) => {
   let name = "";
   let obj = {}
 
-  const json = Buffer.from(req.params.encoded, "base64").toString();
+  const json = Buffer.Buffer.from(req.params.encoded, "base64").toString();
   const decoded = JSON.parse(json)
 
   let id = decoded.id;
