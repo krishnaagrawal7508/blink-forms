@@ -94,30 +94,32 @@ app.post("/router_post/:encoded", async function (req, res) {
   const FROM_WALLET = new PublicKey(req.body.account);
   const lamportsToSend = 10;
 
-  const transferTransaction = new Transaction().add(
-    SystemProgram.transfer({
-      fromPubkey: FROM_WALLET,
-      toPubkey: TO_WALLET,
-      lamports: lamportsToSend,
-    })
-  );
+  // const transferTransaction = new Transaction().add(
+  //   SystemProgram.transfer({
+  //     fromPubkey: FROM_WALLET,
+  //     toPubkey: TO_WALLET,
+  //     lamports: lamportsToSend,
+  //   })
+  // );
 
-  await transferTransaction.add(
-    new TransactionInstruction({
-      keys: [
-        { pubkey: FROM_WALLET, isSigner: true, isWritable: true },
-      ],
-      data: Buffer.from("Data to send in transaction", "utf-8"),
-      programId: new PublicKey("MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr"),
-    })
-  );
+  // await transferTransaction.add(
+  //   new TransactionInstruction({
+  //     keys: [
+  //       { pubkey: FROM_WALLET, isSigner: true, isWritable: true },
+  //     ],
+  //     data: Buffer.from("Data to send in transaction", "utf-8"),
+  //     programId: new PublicKey("MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr"),
+  //   })
+  // );
+
+  let donateIx = SystemProgram.transfer({fromPubkey:FROM_WALLET, lamports:lamportsToSend, toPubkey:TO_WALLET});
 
 
   // build transaction
   let _tx_ = {};
   _tx_.rpc = "https://api.devnet.solana.com";
   _tx_.account = FROM_WALLET;
-  _tx_.instructions = transferTransaction;
+  _tx_.instructions = [ donateIx ];
   _tx_.signers = false;
   _tx_.serialize = true;
   _tx_.encode = true;
