@@ -83,7 +83,6 @@ app.post("/roter_post/:encoded", async function (req, res) {
   const decoded = JSON.parse(json);
 
 
-  const MINT_ADDRESS = new PublicKey("EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"); // usdc mint address
   const TO_WALLET = new PublicKey(decoded.wallet);
   const SOLANA_CONNECTION = new Connection("https://api.mainnet-beta.solana.com", "confirmed");
   const FROM_WALLET = new PublicKey(req.body.account);
@@ -91,8 +90,8 @@ app.post("/roter_post/:encoded", async function (req, res) {
 
   const transferTransaction = new Transaction().add(
     SystemProgram.transfer({
-      fromPubkey: fromKeypair.publicKey,
-      toPubkey: toKeypair.publicKey,
+      fromPubkey: FROM_WALLET,
+      toPubkey: TO_WALLET,
       lamports: lamportsToSend,
     })
   );
@@ -100,28 +99,19 @@ app.post("/roter_post/:encoded", async function (req, res) {
   await transferTransaction.add(
     new TransactionInstruction({
       keys: [
-        { pubkey: fromKeypair.publicKey, isSigner: true, isWritable: true },
+        { pubkey: FROM_WALLET, isSigner: true, isWritable: true },
       ],
       data: Buffer.from("Data to send in transaction", "utf-8"),
       programId: new PublicKey("MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr"),
     })
   );
 
-  // check if the recipient wallet needs a usdc ata
-  let createATA = false;
-  await splToken.getAccount(SOLANA_CONNECTION, toTokenAccount, 'confirmed', splToken.TOKEN_PROGRAM_ID)
-    .then(function (response) { createATA = false; })
-    .catch(function (error) {
-      if (error.name == "TokenAccountNotFoundError") { createATA = true }
-      else { return; }
-    });
-
 
   // build transaction
   let _tx_ = {};
   _tx_.rpc = "https://api.devnet.solana.com";
-  _tx_.account = req.body.account;
-  _tx_.instructions = instructions;
+  _tx_.account = FROM_WALLET;
+  _tx_.instructions = transferTransaction;
   _tx_.signers = false;
   _tx_.serialize = true;
   _tx_.encode = true;
