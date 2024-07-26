@@ -120,7 +120,7 @@ app.post("/router_post/:encoded", async function (req, res) {
   // connect : convert value to fractional units
   const SOLANA_CONNECTION = new Connection("https://api.mainnet-beta.solana.com", "confirmed");
   const FROM_WALLET = new PublicKey(req.body.account);
-  let amount = parseFloat(1);
+  let amount = parseFloat("0.1");
   amount = amount.toFixed(decimals);
   const TRANSFER_AMOUNT = amount * Math.pow(10, decimals);
 
