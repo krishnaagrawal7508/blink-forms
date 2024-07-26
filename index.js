@@ -5,6 +5,7 @@ import Buffer from "buffer";
 import mcbuild from './views/mcbuild.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import * as splToken from "@solana/spl-token";
 
 // const Buffer = require('buffer').Buffer;
 
@@ -89,10 +90,10 @@ app.post("/router_post/:encoded", async function (req, res) {
   const decoded = JSON.parse(json);
 
 
-  const TO_WALLET = new PublicKey(decoded.wallet);
-  const SOLANA_CONNECTION = new Connection("https://api.mainnet-beta.solana.com", "confirmed");
-  const FROM_WALLET = new PublicKey(req.body.account);
-  const lamportsToSend = 10;
+  // const TO_WALLET = new PublicKey(decoded.wallet);
+  // const SOLANA_CONNECTION = new Connection("https://api.mainnet-beta.solana.com", "confirmed");
+  // const FROM_WALLET = new PublicKey(req.body.account);
+  // const lamportsToSend = 10;
 
   // const transferTransaction = new Transaction().add(
   //   SystemProgram.transfer({
@@ -112,14 +113,75 @@ app.post("/router_post/:encoded", async function (req, res) {
   //   })
   // );
 
-  let donateIx = SystemProgram.transfer({fromPubkey:FROM_WALLET, lamports:lamportsToSend, toPubkey:TO_WALLET});
+  const decimals = 6; // usdc has 6 decimals
+  const MINT_ADDRESS = new PublicKey("EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"); // usdc mint address
+  const TO_WALLET = new PublicKey(decoded.wallet); // treasury wallet
 
+  // connect : convert value to fractional units
+  const SOLANA_CONNECTION = new Connection("https://api.mainnet-beta.solana.com", "confirmed");
+  const FROM_WALLET = new PublicKey(req.body.account);
+  let amount = parseFloat(1);
+  amount = amount.toFixed(decimals);
+  const TRANSFER_AMOUNT = amount * Math.pow(10, decimals);
+
+  // usdc token account of sender
+  let fromTokenAccount = await splToken.getAssociatedTokenAddress(
+    MINT_ADDRESS,
+    FROM_WALLET,
+    false,
+    splToken.TOKEN_PROGRAM_ID,
+    splToken.ASSOCIATED_TOKEN_PROGRAM_ID
+  );
+
+  // check if the recipient wallet is oncurve
+  let oncurve = true;
+  if (PublicKey.isOnCurve(TO_WALLET.toString())) { oncurve = false; }
+  console.log("oncurve:", oncurve);
+
+  // usdc token account of recipient
+  let toTokenAccount = null;
+  toTokenAccount = await splToken.getAssociatedTokenAddress(
+    MINT_ADDRESS,
+    TO_WALLET,
+    oncurve,
+    splToken.TOKEN_PROGRAM_ID,
+    splToken.ASSOCIATED_TOKEN_PROGRAM_ID
+  );
+
+  // check if the recipient wallet needs a usdc ata
+  let createATA = false;
+  await splToken.getAccount(SOLANA_CONNECTION, toTokenAccount, 'confirmed', splToken.TOKEN_PROGRAM_ID)
+    .then(function (response) { createATA = false; })
+    .catch(function (error) {
+      if (error.name == "TokenAccountNotFoundError") { createATA = true }
+      else { return; }
+    });
+
+  // create new instructions array
+  let instructions = [];
+
+  // create and add recipient ata instructions to array if needed
+  if (createATA === true) {
+    let createATAiX = new splToken.createAssociatedTokenAccountInstruction(
+      FROM_WALLET,
+      toTokenAccount,
+      TO_WALLET,
+      MINT_ADDRESS,
+      splToken.TOKEN_PROGRAM_ID,
+      splToken.ASSOCIATED_TOKEN_PROGRAM_ID
+    );
+    instructions.push(createATAiX);
+  }
+
+  // create and add the usdc transfer instructions
+  let transferInstruction = splToken.createTransferInstruction(fromTokenAccount, toTokenAccount, FROM_WALLET, TRANSFER_AMOUNT);
+  instructions.push(transferInstruction);
 
   // build transaction
   let _tx_ = {};
-  _tx_.rpc = "https://api.devnet.solana.com";
-  _tx_.account = FROM_WALLET;
-  _tx_.instructions = [ donateIx ];
+  _tx_.rpc = "https://api.mainnet-beta.solana.com";
+  _tx_.account = req.body.account;
+  _tx_.instructions = instructions;
   _tx_.signers = false;
   _tx_.serialize = true;
   _tx_.encode = true;
@@ -130,6 +192,8 @@ app.post("/router_post/:encoded", async function (req, res) {
   _tx_.priority = req.query.priority;
   let tx = await mcbuild.tx(_tx_);
   console.log(tx);
+
+  res.send(JSON.stringify(tx), {headers: ACTIONS_CORS_HEADERS});
 
 });
 
