@@ -29,6 +29,10 @@ app.options("/*", function (req, res, next) {
   res.send(200);
 });
 
+app.get('/', (req, res) => {
+  res.send("Working");
+})
+
 app.get('/router_get/:encoded', (req, res) => {
   let name = "";
   let obj = {}
