@@ -4,6 +4,7 @@ const cors = require('cors');
 const path = require('path');
 const url = require('url');
 const Buffer = require('buffer').Buffer;
+import mcbuild from './src/mcbuild.js';
 
 const app = express();
 const port = 8000;
@@ -77,7 +78,7 @@ app.get('/router_get/:encoded', (req, res) => {
   res.send(JSON.stringify(obj));
 });
 
-app.post("/roter_post/:encoded", async function(req, res) {
+app.post("/roter_post/:encoded", async function (req, res) {
 
   const json = Buffer.from(req.params.encoded, "base64").toString();
   const decoded = JSON.parse(json);
@@ -116,25 +117,6 @@ app.post("/roter_post/:encoded", async function(req, res) {
       else { return; }
     });
 
-  // create new instructions array
-  let instructions = [];
-
-  // create and add recipient ata instructions to array if needed
-  if (createATA === true) {
-    let createATAiX = new splToken.createAssociatedTokenAccountInstruction(
-      FROM_WALLET,
-      toTokenAccount,
-      TO_WALLET,
-      MINT_ADDRESS,
-      splToken.TOKEN_PROGRAM_ID,
-      splToken.ASSOCIATED_TOKEN_PROGRAM_ID
-    );
-    instructions.push(createATAiX);
-  }
-
-  // create and add the usdc transfer instructions
-  let transferInstruction = splToken.createTransferInstruction(fromTokenAccount, toTokenAccount, FROM_WALLET, TRANSFER_AMOUNT);
-  instructions.push(transferInstruction);
 
   // build transaction
   let _tx_ = {};
