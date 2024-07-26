@@ -6,7 +6,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { PublicKey, Connection, Transaction, TransactionInstruction, ComputeBudgetProgram, clusterApiUrl, } from "@solana/web3.js";
 // import { SystemProgram } from "@solana/web3.js";
-import { ACTIONS_CORS_HEADERS, MEMO_PROGRAM_ID, createPostResponse} from "@solana/actions";
+import { ACTIONS_CORS_HEADERS, MEMO_PROGRAM_ID, createPostResponse } from "@solana/actions";
 
 
 const app = express();
@@ -74,7 +74,7 @@ app.get('/router_get/:encoded', (req, res) => {
     "actions": [
       {
         "label": "Send",
-        "href": "http://localhost:8000/router_post/" + req.params.encoded,
+        "href": "https://blink-forms.vercel.app/router_post/" + req.params.encoded,
         "parameters": convertedFields
       }
     ]
@@ -95,7 +95,7 @@ app.post("/router_post/:encoded", async function (req, res) {
     account = new PublicKey(body.account);
     console.log(account)
   } catch (err) {
-    return ;
+    return;
   }
 
   try {
@@ -124,9 +124,9 @@ app.post("/router_post/:encoded", async function (req, res) {
       },
     });
 
-    return ;
+    return;
   } catch (err) {
-    return ;
+    return;
   }
 });
 
@@ -134,7 +134,7 @@ app.get("/actions.json", (req, res) => {
   if (server_host == "https://blink-forms.vercel.app/") {
     let rules = {
       "rules": [{
-        "pathPattern": "/spl/*",
+        "pathPattern": "/*",
         "apiPath": "https://blink-forms.vercel.app/"
       }]
     };
