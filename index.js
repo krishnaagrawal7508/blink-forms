@@ -95,7 +95,7 @@ app.post("/router_post/:encoded", async function (req, res) {
     account = new PublicKey(body.account);
     console.log(account)
   } catch (err) {
-    return new Response("Invalid account", {
+    return new res.send("Invalid account", {
       status: 400,
       headers: ACTIONS_CORS_HEADERS,
     });
@@ -127,11 +127,11 @@ app.post("/router_post/:encoded", async function (req, res) {
       },
     });
 
-    return Response.json(payload, {
+    return res.send.json(payload, {
       headers: ACTIONS_CORS_HEADERS,
     });
   } catch (err) {
-    return Response.json("An error occurred", { status: 400 });
+    return res.send("An error occurred", { status: 400 });
   }
 });
 
@@ -143,7 +143,7 @@ app.get("/actions.json", (req, res) => {
         "apiPath": "https://blink-forms.vercel.app/"
       }]
     };
-    res.send(JSON.stringify(rules), { headers: ACTIONS_CORS_HEADERS });
+    res.send(JSON.stringify(rules));
   }
 });
 
