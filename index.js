@@ -11,7 +11,7 @@ const port = 8000;
 // Enable CORS
 app.use(cors());
 
-app.use(express.static(__dirnaem + "uploads"));
+app.use(express.static(__dirname + "uploads"));
 
 app.use(function (req, res, next) {
   res.setHeader('Access-Control-Allow-Origin', '*');
