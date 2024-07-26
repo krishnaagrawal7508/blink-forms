@@ -4,7 +4,7 @@ const cors = require('cors');
 const path = require('path');
 const url = require('url');
 const Buffer = require('buffer').Buffer;
-import mcbuild from './src/mcbuild.js';
+const mcbuild = require('./src/mcbuild.js');
 
 const app = express();
 const port = 8000;
