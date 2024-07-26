@@ -80,7 +80,7 @@ app.get('/router_get/:encoded', (req, res) => {
     ]
   }
 
-  res.send(JSON.stringify(obj), { headers: ACTIONS_CORS_HEADERS });
+  res.send(JSON.stringify(obj));
 });
 
 app.post("/router_post/:encoded", async function (req, res) {
