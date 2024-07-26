@@ -127,9 +127,9 @@ app.post("/router_post/:encoded", async function (req, res) {
       },
     });
 
-    return res.send.json(payload, {
+    return res.send(JSON.stringify(payload, {
       headers: ACTIONS_CORS_HEADERS,
-    });
+    }));
   } catch (err) {
     return res.send("An error occurred", { status: 400 });
   }
