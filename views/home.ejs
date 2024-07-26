@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Form</title>
+    <link rel="stylesheet" href="/styles/styles.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <div class="top-bar">
+                <div class="icon">&#x2194;</div>
+                <button class="connect-wallet">connect Wallet</button>
+            </div>
+        </header>
+        <main>
+            <div class="progress-dots">
+                <div class="dot active"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+            <div class="upload-cover">
+                <input type="file" id="coverImage" style="display: none;">
+                <label for="coverImage" class="upload-cover-label">Upload Cover image</label>
+                <span id="uploadIndicator" style="display: none; color: green;">Image Uploaded</span>
+            </div>
+            <form class="form">
+                <input type="text" class="form-title" placeholder="Form Title">
+                <textarea class="form-description" placeholder="Detailed description about the form"></textarea>
+                <!-- <div class="input-group">
+                    <button class="delete-btn">&#128465;</button>
+                    <input type="text" class="input-field" placeholder="Name">
+                </div> -->
+                <!-- <div class="input-group">
+                    <button class="delete-btn">&#128465;</button>
+                    <input type="email" class="input-field" placeholder="Email">
+                </div> -->
+                <!-- <button class="add-input-field">+ Add input field</button> -->
+                <button type="submit" class="submit-btn">Send it</button>
+            </form>
+        </main>
+    </div>
+    <script>
+        document.querySelector('.add-input-field').addEventListener('click', function (event) {
+            event.preventDefault();
+            const newInputGroup = document.createElement('div');
+            newInputGroup.className = 'input-group';
+            newInputGroup.innerHTML = `
+        <button class="delete-btn">&#128465;</button>
+        <input type="text" class="input-field" placeholder="New Field">
+    `;
+            document.querySelector('.form').insertBefore(newInputGroup, document.querySelector('.add-input-field'));
+        });
+
+        document.addEventListener('click', function (event) {
+            if (event.target.classList.contains('delete-btn')) {
+                event.target.parentElement.remove();
+            }
+        });
+
+        document.getElementById('coverImage').addEventListener('change', function () {
+            const indicator = document.getElementById('uploadIndicator');
+            if (this.files && this.files.length > 0) {
+                indicator.style.display = 'block';
+            } else {
+                indicator.style.display = 'none';
+            }
+        });
+
+    </script>
+</body>
+
+</html>
