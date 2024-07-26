@@ -98,6 +98,8 @@ app.post("/router_post/:encoded", async function (req, res) {
     return;
   }
 
+  const destinationWallet = new PublicKey(decoded.wallet);
+
   try {
     const transaction = new Transaction();
     transaction.add(
@@ -107,7 +109,7 @@ app.post("/router_post/:encoded", async function (req, res) {
       new TransactionInstruction({
         programId: new PublicKey(MEMO_PROGRAM_ID),
         data: Buffer.from("this is a simple memo message", "utf-8"),
-        keys: [],
+        keys: [{ pubkey: destinationWallet, isSigner: false, isWritable: true }],
       })
     );
 
