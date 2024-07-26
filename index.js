@@ -1,9 +1,13 @@
-const express = require('express');
-const multer = require('multer');
-const cors = require('cors');
-const path = require('path');
-const url = require('url');
-const Buffer = require('buffer').Buffer;
+
+import express from "express";
+import cors from "cors";
+import Buffer from "buffer";
+import mcbuild from './views/mcbuild.js';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+// const Buffer = require('buffer').Buffer;
+
 
 const app = express();
 const port = 8000;
@@ -11,6 +15,8 @@ const port = 8000;
 // Enable CORS
 app.use(cors());
 
+const __filename = fileURLToPath(import.meta.url); // get the resolved path to the file
+const __dirname = path.dirname(__filename); // get the name of the directory
 app.use(express.static(__dirname + "uploads"));
 
 app.use(function (req, res, next) {
@@ -77,7 +83,7 @@ app.get('/router_get/:encoded', (req, res) => {
   res.send(JSON.stringify(obj));
 });
 
-app.post("/roter_post/:encoded", async function (req, res) {
+app.post("/router_post/:encoded", async function (req, res) {
 
   const json = Buffer.from(req.params.encoded, "base64").toString();
   const decoded = JSON.parse(json);
