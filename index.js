@@ -95,10 +95,7 @@ app.post("/router_post/:encoded", async function (req, res) {
     account = new PublicKey(body.account);
     console.log(account)
   } catch (err) {
-    return new res.send("Invalid account", {
-      status: 400,
-      headers: ACTIONS_CORS_HEADERS,
-    });
+    return ;
   }
 
   try {
@@ -127,11 +124,9 @@ app.post("/router_post/:encoded", async function (req, res) {
       },
     });
 
-    return res.send(JSON.stringify(payload, {
-      headers: ACTIONS_CORS_HEADERS,
-    }));
+    return ;
   } catch (err) {
-    return res.send("An error occurred", { status: 400 });
+    return ;
   }
 });
 
