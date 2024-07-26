@@ -2,11 +2,10 @@
 import express from "express";
 import cors from "cors";
 import Buffer from "buffer";
-import mcbuild from './views/mcbuild.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { PublicKey, Connection, TransactionMessage, VersionedTransaction, Transaction, TransactionInstruction, ComputeBudgetProgram, clusterApiUrl, } from "@solana/web3.js";
-import { SystemProgram } from "@solana/web3.js";
+import { PublicKey, Connection, Transaction, TransactionInstruction, ComputeBudgetProgram, clusterApiUrl, } from "@solana/web3.js";
+// import { SystemProgram } from "@solana/web3.js";
 import { ACTIONS_CORS_HEADERS, MEMO_PROGRAM_ID, createPostResponse} from "@solana/actions";
 
 
