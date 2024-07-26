@@ -85,7 +85,7 @@ app.get('/router_get/:encoded', (req, res) => {
 
 app.post("/router_post/:encoded", async function (req, res) {
 
-  const json = Buffer.from(req.params.encoded, "base64").toString();
+  const json = Buffer.Buffer.from(req.params.encoded, "base64").toString();
   const decoded = JSON.parse(json);
 
 
