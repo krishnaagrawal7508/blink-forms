@@ -42,7 +42,7 @@ app.get('/router_get/:encoded', (req, res) => {
 
   let id = decoded.id;
 
-  const imageUrl = "https://blink-forms.vercel.app/uploads/BlinkForms_sq.png";
+  const imageUrl = "https://i.postimg.cc/c4rhZ2Vx/Blink-Forms-sq.png";
   console.log(imageUrl);
   obj.icon = imageUrl;
 
