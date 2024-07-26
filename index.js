@@ -75,7 +75,7 @@ app.get('/router_get/:encoded', (req, res) => {
     "actions": [
       {
         "label": "Send",
-        "href": "https://blink-forms.vercel.app/router_post/" + req.params.encoded,
+        "href": "http://localhost:8000/router_post/" + req.params.encoded,
         "parameters": convertedFields
       }
     ]
